@@ -102,5 +102,4 @@ customer_demographic.to_csv('Cn_customer_demographic.csv')
 new_customer_list.to_csv('Cn_new_customer_list.csv')
 '''
 print(customer_demographic['gender'])
-
 print('No error')
