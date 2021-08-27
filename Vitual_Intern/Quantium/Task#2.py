@@ -159,7 +159,6 @@ for i in data_trial_control:
                         88          |       178
                 Then, data visualization will be used in order to measure efficiency of Task#1's policy. After using two metrics, number of customer and total sales.
                 Every metrics of trial stores got higher efficiency compare with control stores.
-'''
 """
 
 
