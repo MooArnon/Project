@@ -137,8 +137,9 @@ for i in data_trial_control:
     plt.close()
 
 """
-    From data visualization, in number of customer section. Trial stores haves specific number of customer per month, in trial month, Feb-2019 to Apl-2019, more than control store.
-    The number of customer always decrease on January of each store, as a usual. However, on control month, the increment of customer is specific in term of applied suggestion from Task#1.
+    From data visualization, in number of customer section. Trial stores haves specific number of customer per month, in trial month, Feb-2019 to Apl-2019, 
+    more than control store.The number of customer always decrease on January of each store, as a usual. 
+    However, on control month, the increment of customer is specific in term of applied suggestion from Task#1.
 """
 ## Total sales
 for i in data_trial_control:
@@ -157,8 +158,8 @@ for i in data_trial_control:
                         77          |       233
                         86          |       155
                         88          |       178
-                Then, data visualization will be used in order to measure efficiency of Task#1's policy. After using two metrics, number of customer and total sales.
-                Every metrics of trial stores got higher efficiency compare with control stores.
+                Then, data visualization will be used in order to measure efficiency of Task#1's policy. 
+                After using two metrics, number of customer and total sales.Every metrics of trial stores got higher efficiency compare with control stores.
 """
 
 
