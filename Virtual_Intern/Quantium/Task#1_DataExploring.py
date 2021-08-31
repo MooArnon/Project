@@ -81,6 +81,6 @@ def top3_brand(LifeStage, PremiumCustomer):
 
 """
     Conclusion: Top 3 valuable customers are Budget older families, Mainstream retireses and Mainstream young singles/couples.
-Customers almost buy 2 and 1 packs per transaction. Moreover, Kattle is the most popular brand with approximately 150 grams
-of package. 
+                Customers almost buy 2 and 1 packs per transaction. Moreover, Kattle is the most popular brand with approximately 150 grams
+                of package. 
 """
