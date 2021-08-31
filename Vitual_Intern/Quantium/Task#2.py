@@ -162,11 +162,3 @@ for i in data_trial_control:
                 After using two metrics, number of customer and total sales.Every metrics of trial stores got higher efficiency compare with control stores.
 """
 
-
-
-
-
-
-
-
-
