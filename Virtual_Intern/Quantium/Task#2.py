@@ -138,7 +138,7 @@ for i in data_trial_control:
 
 """
     From data visualization, in number of customer section. Trial stores haves specific number of customer per month, in trial month, Feb-2019 to Apl-2019, 
-    more than control store.The number of customer always decrease on January of each store, as a usual. 
+    more than control store.The number of customer alw  ays decrease on January of each store, as a usual. 
     However, on control month, the increment of customer is specific in term of applied suggestion from Task#1.
 """
 ## Total sales

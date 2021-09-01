@@ -1,8 +1,8 @@
 '''
     This project was created this model in order to be used in 'Site eng. helping book'.
-        Dear site eng, who want to use this model. You have to install essential package below before use.
-        Dear developer, I'm actually new in this branch. I optimized my code to be easy to read.
-    However you can contact me anytime by oomarnon.000@kmutt.ac.th. Thank you guys who interested in my project.
+        Dear site eng, who want to use this model. You have to install essential packages below before use.
+        Dear developer, we aer actually new in this branch. we optimized our code to be easy to read.
+    However you can contact us anytime by 'oomarnon.000@gmail.com' and 'suppawich.pinyo@mail.kmutt.ac.th' . Thank you guys who interested in my project.
 '''
 
 from numpy.lib.function_base import append
