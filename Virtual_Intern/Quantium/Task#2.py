@@ -9,6 +9,7 @@ import re
 from IPython.display import display
 import warnings
 import matplotlib.dates as mdates
+import sklearn
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 

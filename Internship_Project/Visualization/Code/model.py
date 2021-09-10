@@ -15,7 +15,7 @@ import squarify
 import matplotlib
 from itertools import product
 
-data1 = pd.read_csv(r'/Users/moosmacm1/Data_science/Code/GITHUB/GITHUB/Internship_Project/Visualization/Source/Test.csv')
+data1 = pd.read_csv(r'/Users/moomacprom1/Data_science/Code/GitHub/Internship_Project/Visualization/Source/Test.csv') # Read data from Test.csv
 
 #* Categorized
 #by contractor
