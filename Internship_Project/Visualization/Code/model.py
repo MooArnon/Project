@@ -95,3 +95,4 @@ def remaining_plot(contractor,kind):
     plt.show()
 
 
+remaining_plot('c', 'bar')

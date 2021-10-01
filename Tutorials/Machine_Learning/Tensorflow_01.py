@@ -32,7 +32,7 @@ model.compile(optimizer='adam',
     metrics=['accuracy'])
 
 # Train model
-model.fit(training_images, training_lables, epochs=50)
+model.fit(training_images, training_lables, epochs=30)
 
 model.evaluate(testing_images, testing_lables)
 
