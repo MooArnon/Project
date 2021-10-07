@@ -33,18 +33,10 @@ for epoch in range(7000):
     dw = t.gradient(loss, model.w)
     for i, w in enumerate(model.w):
         w.assign_sub(lr * dw[i])
-    if epoch == 1000:
+    if epoch%1000 == 0:
         print(loss.numpy())
 
 z = model(x)
 plt.plot(x, z, ".r")
 plt.plot(x, y, "." )
 plt.show()
-
-        
-
-    
-        
-    
-
-
