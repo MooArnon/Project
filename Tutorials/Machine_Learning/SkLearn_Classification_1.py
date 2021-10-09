@@ -42,7 +42,7 @@ plt.xlabel('Number of Neighbors')
 plt.ylabel('Accuracy')
 plt.show()
 
-
+print(data.shape)
 """
 Conclusion:  
     The accuracy of model, from testing, is approximately 67.23% for K-value == 14.
