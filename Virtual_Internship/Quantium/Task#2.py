@@ -74,8 +74,8 @@ corrmat = pre_df.corr()
 mask = np.triu(np.ones_like(corrmat, dtype=bool))
 # plt.subplots(figsize = (25, 15))
 sns.heatmap(corrmat, mask = mask, cmap = 'coolwarm', annot = True)
-plt.xticks(rotation = 90)
-plt.close()
+plt.xticks(rotation = 45)
+plt.show()
 
 metrics_cols = ['STORE_NBR', 'year_month', 'yearly_sale',
                 'yearly_cust','monthly_sale', 'monthly_cust', 'avg_txn_per_cust']
