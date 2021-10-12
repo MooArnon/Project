@@ -1,14 +1,16 @@
-from re import VERBOSE
+from re import VERBOSE, X
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow._api.v2 import nn
 from tensorflow.keras import layers
 from tensorflow.python.keras.api._v2.keras import callbacks
-from tensorflow.python.keras.backend import print_tensor
+from tensorflow.python.keras.backend import print_tensor, relu
 from tensorflow.python.keras.engine.base_layer import Layer
+from tensorflow.python.keras.layers.core import Dense
 from tensorflow.python.keras.utils.layer_utils import print_summary
 
 #* Import data
@@ -46,26 +48,61 @@ normed_test_data = norm(test_data)
 print(normed_test_data)
 
 #* Model
+# Build model
+def build_model():
+    model = keras.Sequential([
+            tf.keras.layers.Dense(32, activation=tf.nn.relu, input_shape=[len(train_data.keys())]), # input shape is number of features in dataset
+            tf.keras.layers.Dense(16, activation=tf.nn.relu),
+            tf.keras.layers.Dense(8, activation=tf.nn.relu),
+            tf.keras.layers.Dense(1)])
+    # Determine optimizer
+    optimizer = tf.keras.optimizers.RMSprop(0.001) # Learning rate == 0.001
+    # Compile model
+    model.compile(loss='mse',
+                optimizer=optimizer,
+                metrics=['mae', 'mse'])
+    print(model.summary())
+    return model
+# stop when model fitted
+early_stop = keras.callbacks.EarlyStopping(monitor='mae', patience=200)
+# fitting model
+model = build_model()
+# store history of trained
+history = model.fit(normed_train_data, train_label, epochs=1000, validation_split=0.2, callbacks=early_stop)
+hist = pd.DataFrame(history.history)
+hist['epoch'] = history.epoch
 
-model = keras.Sequential([
-        tf.keras.layers.Dense(64, activation=tf.nn.relu, input_shape=[len(train_data.keys())]), # input shape is number of features in dataset
-        tf.keras.layers.Dense(64, activation=tf.nn.relu,),
-        tf.keras.layers.Dense(1)
-])
 
-optimizer = tf.keras.optimizers.RMSprop(0.001) # Learning rate == 0.001
+#* Visualize how fitted of model
+def model_plotted(history):
+    hist = pd.DataFrame(history.history)
+    hist['epoch'] = history.epoch
+    plt.xlabel('epoch')
+    plt.ylabel('Mean App Err.')
+    plt.plot(hist['epoch'], hist['mae'], label='train error')
+    plt.plot(hist['epoch'], hist['val_mae'], label='val error')
+    plt.legend()
+    plt.show()
 
-model.compile(loss='mse',
-                    optimizer=optimizer,
-                    metrics=['mae', 'mse'])
-print(model.summary())
+        
 
-Epochs = 1000
+model_plotted(history) 
 
-model.fit(normed_train_data, train_label, epochs=Epochs)
-
+#* Prediction
+loss, mae, mse = model.evaluate(normed_test_data, test_label, verbose=0)
+test_prediction = model.predict(normed_test_data).flatten()
+# Plotting
+plt.scatter(test_label, test_prediction)
+plt.xlabel('True Values')
+plt.ylabel('Predictions')
+plt.axis('equal')
+plt.axis('square')
+_ = plt.plot([-100,100], [-100, 100])
+plt.show()
 """
-    Epoch 1000/1000
-    70/70 [==============================] - 0s 313us/step - loss: 4.5466e-04 - mae: 0.0095 - mse: 4.5466e-04
+128 Neurons: loss: 4.7247e-04 - mae: 0.0107 - mse: 4.7247e-04
+64  Neurons: loss: 4.4533e-04 - mae: 0.0098 - mse: 4.4533e-04
+32  Neurons: loss: 3.9095e-04 - mae: 0.0104 - mse: 3.9095e-04
+16  Neurons: loss: 4.6131e-04 - mae: 0.0111 - mse: 4.6131e-04
 """
 
