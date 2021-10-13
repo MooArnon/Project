@@ -11,7 +11,7 @@ from tensorflow.python.keras.callbacks import History
 # Random data
 n = 500
 x = np.random.rand(n)
-y = np.sin(2*np.pi*x) + 0.4*(np.random.rand(n))
+y = np.log(2*x*np.pi) + 0.4*(np.random.rand(n))
 # Build data frame
 data = pd.DataFrame(x)
 data['y'] = y
@@ -40,7 +40,7 @@ def build_model():
 
 #*fit model
 # stop fitting when model meet good condition
-stop_when_good = keras.callbacks.EarlyStopping(monitor='mse', patience=500)
+stop_when_good = keras.callbacks.EarlyStopping(monitor='mse', patience=250)
 epoch = 3500
 model = build_model()
 history = model.fit(data_train['x'], train_label, 
@@ -54,9 +54,10 @@ hist['epoch'] = history.epoch
 def plot_model():
     plt.xlabel('Epochs')
     plt.ylabel('Mean Square Error')
+    plt.title('Mean Square Errors')
+    plt.legend()
     plt.plot(hist['epoch'], hist['mse'])
     plt.plot(hist['epoch'], hist['val_mse'])
-    plt.legend()
     plt.show()
 plot_model()
 

@@ -99,6 +99,7 @@ plt.axis('equal')
 plt.axis('square')
 _ = plt.plot([-100,100], [-100, 100])
 plt.show()
+
 """
 128 Neurons: loss: 4.7247e-04 - mae: 0.0107 - mse: 4.7247e-04
 64  Neurons: loss: 4.4533e-04 - mae: 0.0098 - mse: 4.4533e-04
