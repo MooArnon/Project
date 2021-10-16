@@ -11,7 +11,7 @@ from tensorflow.python.keras.callbacks import History
 # Random data
 n = 500
 x = np.random.rand(n)
-y = np.log(2*x*np.pi) + 0.4*(np.random.rand(n))
+y = np.log(2*x) + 0.4*(np.random.rand(n))
 # Build data frame
 data = pd.DataFrame(x)
 data['y'] = y
@@ -27,22 +27,22 @@ plt.close()
 #* Build model
 def build_model():
     model = keras.Sequential([
-        layers.Dense(32, activation=tf.nn.relu, input_dim=1),
-        layers.Dense(32, activation=tf.nn.relu),
+        layers.Dense(64, activation=tf.nn.relu, input_dim=1),
         layers.Dense(32, activation=tf.nn.relu),
         layers.Dense(1)
         ])
     optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.0001)
-    model.compile(loss='mse',
+    model.compile(loss='mae',
                    optimizer=optimizer,
-                   metrics='mse')
+                   metrics=['mse', 'mae'])
+
     return model
 
 #*fit model
 # stop fitting when model meet good condition
-stop_when_good = keras.callbacks.EarlyStopping(monitor='mse', patience=250)
-epoch = 3500
+epoch = 2000
 model = build_model()
+stop_when_good = keras.callbacks.EarlyStopping(monitor='mse', patience=250)
 history = model.fit(data_train['x'], train_label, 
                           epochs=epoch, validation_split=0.2, 
                           callbacks=stop_when_good)
@@ -51,7 +51,7 @@ hist = pd.DataFrame(history.history)
 hist['epoch'] = history.epoch
 
 #* Measure how good of this model
-def plot_model():
+def plot_model_mse():
     plt.xlabel('Epochs')
     plt.ylabel('Mean Square Error')
     plt.title('Mean Square Errors')
@@ -59,12 +59,24 @@ def plot_model():
     plt.plot(hist['epoch'], hist['mse'])
     plt.plot(hist['epoch'], hist['val_mse'])
     plt.show()
-plot_model()
+def plot_model_mae():
+    plt.xlabel('Epochs')
+    plt.ylabel('Mean Absolute Error')
+    plt.title('Mean Absolute Errors')
+    plt.legend()
+    plt.plot(hist['epoch'], hist['mae'])
+    plt.plot(hist['epoch'], hist['val_mae'])
+    plt.show()
 
+
+print(data_test)
 #* Prediction
-loss, mse = model.evaluate(data_test['x'], test_label, verbose=0)
+loss, mse, mae = model.evaluate(data_test['x'], test_label, verbose=0)
 test_prediction = model.predict(data_test['x'])
 # Plotting
+plot_model_mse()
+plot_model_mae()
+
 plt.scatter(test_label, test_prediction)
 plt.xlabel('True Values')
 plt.ylabel('Predictions')
@@ -74,3 +86,7 @@ plt.show()
 plt.plot(x, y, '.')
 plt.plot(data_test['x'], test_prediction, '.r')
 plt.show()
+
+
+model.summary()
+
