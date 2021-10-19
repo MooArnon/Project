@@ -11,7 +11,7 @@ from tensorflow.python.keras.callbacks import History
 # Random data
 n = 500
 x = np.random.rand(n)
-y = np.log(2*x) + 0.4*(np.random.rand(n))
+y = np.sin(10*np.pi*x) + 0.4*(np.random.rand(n))
 # Build data frame
 data = pd.DataFrame(x)
 data['y'] = y
@@ -22,12 +22,14 @@ data_test = data.drop(data_train.index)
 train_label = data_train['y']
 test_label = data_test['y']
 plt.plot(data['x'], data['y'], '.')
-plt.close()
+plt.show()
 
 #* Build model
 def build_model():
     model = keras.Sequential([
-        layers.Dense(64, activation=tf.nn.relu, input_dim=1),
+        layers.Dense(128, activation=tf.nn.relu, input_dim=1),
+        layers.Dense(128, activation=tf.nn.relu),
+        layers.Dense(64, activation=tf.nn.relu),
         layers.Dense(32, activation=tf.nn.relu),
         layers.Dense(1)
         ])
@@ -40,7 +42,7 @@ def build_model():
 
 #*fit model
 # stop fitting when model meet good condition
-epoch = 2000
+epoch = 20000
 model = build_model()
 stop_when_good = keras.callbacks.EarlyStopping(monitor='mse', patience=250)
 history = model.fit(data_train['x'], train_label, 
@@ -87,6 +89,9 @@ plt.plot(x, y, '.')
 plt.plot(data_test['x'], test_prediction, '.r')
 plt.show()
 
-
 model.summary()
 
+"""
+1st time    Epoch 3598/20000
+            10/10 [==============================] - 0s 2ms/step - loss: 0.1314 - mse: 0.0305 - mae: 0.1314 - val_loss: 0.1181 - val_mse: 0.0235 - val_mae: 0.1181
+"""
