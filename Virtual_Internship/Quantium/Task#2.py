@@ -19,14 +19,14 @@ import matplotlib.dates as mdates
 #* Import data
 final_data = pd.read_csv("/Users/moomacprom1/Data_science/Code/GitHub/Virtual_Internship/Quantium/Data/clean/final_data.csv", parse_dates= ['DATE'])
 print(final_data.head(5))
-""" The final_data is
+""" 
+The final_data is
        Unnamed: 0       DATE  STORE_NBR  LYLTY_CARD_NBR  TXN_ID  ...  TOT_SALES Brand_name  Bag_size              LIFESTAGE PREMIUM_CUSTOMER
 0           0 2018-07-01         19           19205       16466  ...        3.7   Pringles       134  OLDER SINGLES/COUPLES       Mainstream
 1           1 2018-08-19         19           19205       16467  ...        8.4     Kettle       135  OLDER SINGLES/COUPLES       Mainstream
 2           2 2018-09-18         19           19205       16468  ...       10.8     Kettle       175  OLDER SINGLES/COUPLES       Mainstream
 3           3 2018-07-01        189          189381      190189  ...        3.1      Grain       180         OLDER FAMILIES       Mainstream
 4           4 2018-07-01        124          124236      127984  ...        3.8  Infuzions       110         OLDER FAMILIES           Budget
-
 
     The idea is group data by metric, monthly sales and monthly customers. Divide month of ordinary store before and after trial suggestion.
     In order to find control store of each trial store, using each metric in order to measure behavior of each store. 
@@ -174,12 +174,10 @@ for i in data_trial_control:
     print(data_plot)
     sns.catplot(data=data_plot, x='year_month', hue='STORE_NBR', y='TOT_SALES', kind='point' )
     plt.close()
-    
-"""
-    This section, Total sales, also give us the same result as Number of customer section. All trial stores gain more sales.
-"""
 
 """
+    This section, Total sales, also give us the same result as Number of customer section. All trial stores gain more sales.
+
     Conclusion: From determining control stores for each trial stores, by giving score in order to find the nearest data values.
                 We have 233, 155, 178 of control stores for 77, 86, 88 of trial stores.
                     Control store   |   Trial store
@@ -189,4 +187,3 @@ for i in data_trial_control:
                 Then, data visualization will be used in order to measure efficiency of Task#1's policy. 
                 After using two metrics, number of customer and total sales.Every metrics of trial stores got higher efficiency compare with control stores.
 """
-

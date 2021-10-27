@@ -6,12 +6,14 @@ import pandas as pd
 from tensorflow import keras
 from tensorflow.python.keras.api._v2.keras import callbacks, layers, optimizers
 from tensorflow.python.keras.callbacks import History
+import cv2
+
 
 #* Data processing
 # Random data
-n = 500
+n = 700
 x = np.random.rand(n)
-y = np.sin(10*np.pi*x) + 0.4*(np.random.rand(n))
+y = np.sin(5*np.pi*x) + 0.4*(np.random.rand(n))
 # Build data frame
 data = pd.DataFrame(x)
 data['y'] = y
@@ -22,19 +24,18 @@ data_test = data.drop(data_train.index)
 train_label = data_train['y']
 test_label = data_test['y']
 plt.plot(data['x'], data['y'], '.')
-plt.show()
+plt.close()
 
 #* Build model
 def build_model():
     model = keras.Sequential([
         layers.Dense(128, activation=tf.nn.relu, input_dim=1),
-        layers.Dense(128, activation=tf.nn.relu),
         layers.Dense(64, activation=tf.nn.relu),
         layers.Dense(32, activation=tf.nn.relu),
         layers.Dense(1)
         ])
-    optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.0001)
-    model.compile(loss='mae',
+    optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.001)
+    model.compile(loss='mse',
                    optimizer=optimizer,
                    metrics=['mse', 'mae'])
 
