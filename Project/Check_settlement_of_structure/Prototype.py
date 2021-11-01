@@ -2,20 +2,40 @@ import numpy as np
 import pandas as pd
 import cv2
 import cv2.aruco as aruco
+"""
+    Objective: To find the relative distance between marker
+    Conditions: Using 2 ArUco marker, first as a reference point and second is settlement measurement.
+    By: Arnon Phongsiang ==email== oomarnon.000@gmail.com
+
+    Concept:
+
+            vec(AB)
+    [ A ]--------->[ B ]
+       \            /
+        \          /
+         \        /           AB + BC = AC
+  vec(AC) \      / vec(BC)    AB = AC - BC
+           \    /             AB = AC + (-BC)  # Inverse vector BC and compose them to indicate vector(AB)
+            \  /
+             VV  
+             [c]
+"""
+# Read video from build in camera.
+cap = cv2.VideoCapture(0)
 
 #* Inverse second vector
-def InverseVector(tvec, rvec):
-    R, _ = cv2.Rodrigues(rvec)
-    R = np.matrix(R).T
-    invTvec = np.dot(-R, np.matrix(tvec))
-    invRvec, _ = cv2.Rodrigues(R)
+def InverseVector(rvec, tvec): # inputted rvec is now rotation vector.
+    R, _ = cv2.Rodrigues(rvec) # using Rodrigues() to convert rvec, vector, to metric.
+    R = np.matrix(R).T         # .T for transpose.
+    invTvec = np.dot(-R, np.matrix(tvec)) # Dot product of invese R and tvec
+    invRvec, _ = cv2.Rodrigues(R) # convert R back to vector
     return invRvec, invTvec
 
 #* Relative position
-def RelativePosition(tvec1, rvec1, tvec2, rvec2):
-    tvec1, rvec1 = tvec1.reshape((3,1)), rvec1.reshape((3,1))
-    tvec2, rvec2 = tvec2.reshape((3,1)), rvec2.reshape((3,1))
-    invtvec, invrvec = InverseVector(tvec2, rvec2)
+def RelativePosition(rvec1, tvec1,rvec2, tvec2):
+    rvec1, tvec1 = rvec1.reshape((3,1)), tvec1.reshape((3,1))
+    rvec2, tvec2 =  rvec2.reshape((3,1)), tvec2.reshape((3,1)),
+    invrvec, invtvec = InverseVector(rvec2, tvec2)
     info = cv2.composeRT(rvec1, tvec1, invrvec, invtvec)
     composedRvec, composedTvec = info[0], info[1]
     composedRvec = composedRvec.reshape((3,1))
@@ -23,65 +43,57 @@ def RelativePosition(tvec1, rvec1, tvec2, rvec2):
     return composedRvec, composedTvec
 
 #* Camera caribrated parameters
-#! Not true value, need to calibrate again
-camera_matrix = np.array([[1.019099074177694320e+03, 0.00000000e+00, 6.557727729771451095e+02,], 
-                       [0.00000000e+00, 1.011927236550148677e+03, 3.816077913964442700e+02,],
+#! Not true value, need to calibrate again.
+camera_matrix = np.array([[1.07729557e+03, 0.00000000e+00, 7.40231371e+02,], 
+                       [0.00000000e+00, 1.07316875e+03, 5.51345664e+02,],
                        [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-camera_distotion = np.array([[2.576784605153304430e-01,-1.300640184051879311e+00, -4.285777480424158084e-03,
-                              -2.507657388926626523e-03, 2.307018624520866812e+00]])
+camera_distotion = np.array([[ 1.38914028e-01, -3.23710598e+00, -1.31295901e-03,  1.77727072e-03, 3.90343997e+01]])
 
+#* OpenCV section
 def working(camera_matrix, camera_distotion):
-    #* OpenCV section
     # Parameter
-    PointCircle = (0,0)
     MarkerTvecList = []
     MarkerRvecList = []
     composedRvec, composedTvec = None, None
     firstMarkerID = 0
     secondMarkerID = 1
+    marker_size = 0.05
 
-    # Read video from build in camera.
-    cap = cv2.VideoCapture(0)
     # Open program
     while cap.isOpened():
         ret, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         arucodict = aruco.Dictionary_get(aruco.DICT_5X5_250)
         parameter = aruco.DetectorParameters_create()
-        corners, ids, rejected_img_points = aruco.detectMarkers(gray, arucodict,
+        (corners, ids, rejected_img_points) = aruco.detectMarkers(gray, arucodict,
                                                                 parameters=parameter,
-                                                                cameraMatrix=np.float32(camera_matrix),
-                                                                distCoeff=np.float32(camera_distotion))
-        # Detect all camera
+                                                                cameraMatrix=camera_matrix,
+                                                                distCoeff=camera_distotion)
+        # Detect all marker
         if np.all(ids is not None):
-            del MarkerRvecList[:]
-            del MarkerTvecList[:]
             axis = np.float32([[-0.01, -0.01, 0], [-0.01, 0.01, 0], [0.01, -0.01, 0], [0.01, 0.01, 0]]).reshape(-1, 3)
             for i in range(0, len(ids)):
-                rvec, tvec, markerPoint = aruco.estimatePoseSingleMarkers(corners[i], 0.02, camera_matrix, camera_distotion)
+                rvec, tvec, markerPoint = aruco.estimatePoseSingleMarkers(corners[i], marker_size, 
+                                                                        camera_matrix, camera_distotion)
                 if ids[i] == firstMarkerID:
                     firstRvec = rvec
                     firstTvec = tvec
                 elif ids[i] == secondMarkerID:
                     secondRvec = rvec
                     secondTvec = tvec
-                (rvec - tvec).any()
-                MarkerRvecList.append(rvec)
-                MarkerTvecList.append(tvec)
                 aruco.drawDetectedMarkers(frame, corners)
             
             if len(ids) > 1 and composedTvec is not None and composedRvec is not None:
                 info = cv2.composeRT(composedRvec, composedTvec, secondRvec.T, secondTvec.T)
                 TcomposedRvec, TcomposedTvec = info[0], info[1]
 
-                imgpts = cv2.projectPoints(axis, TcomposedRvec, TcomposedTvec, camera_matrix, camera_distotion)
-                aruco.drawAxis(frame, camera_matrix, camera_distotion, TcomposedRvec, TcomposedTvec, 0.01)
-                relativePoint = (int(imgpts[0][0][0]), int(imgpts[0][0][1]))
-                cv2.circle(frame, relativePoint, 2, (255, 255, 0))
+                # frame = draw(frame, corners[0], imgpts)
+                aruco.drawAxis(frame, camera_matrix, camera_distotion, TcomposedRvec, TcomposedTvec, 0.03)  # Draw Axis
+
         #display
         cv2.imshow('Processing', frame)
         key = cv2.waitKey(3) & 0xFF
-        if key == ord('q'):  # Quit
+        if key == ord('q'):  # Exit
                 break
         elif key == ord('c'): 
             if len(ids) > 1:  # if 2 marker detected reverse second vectors and find the differences, by using RelativePosition
