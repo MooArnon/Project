@@ -6,6 +6,8 @@ import cv2.aruco as aruco
     Objective: To find the relative distance between marker
     Conditions: Using 2 ArUco marker, first as a reference point and second is settlement measurement.
     By: Arnon Phongsiang ==email== oomarnon.000@gmail.com
+        Suppawich Pinyo  ==email== suppawich.pinyo@mail.kmutt.ac.th
+         Nichapon Akkarachaidecho ==email== nichapon.a@mail.kmutt.ac.th
 
     Concept:
 
@@ -16,7 +18,7 @@ import cv2.aruco as aruco
          \        /           AB + BC = AC
   vec(AC) \      / vec(BC)    AB = AC - BC
            \    /             AB = AC + (-BC)  # Inverse vector BC and compose them to indicate vector(AB)
-            \  /
+            \  /              Then, differences of y-axis will be the settlement.
              VV  
              [c]
 """
