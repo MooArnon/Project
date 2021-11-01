@@ -8,7 +8,6 @@ from tensorflow.python.keras.api._v2.keras import callbacks, layers, optimizers
 from tensorflow.python.keras.callbacks import History
 import cv2
 
-
 #* Data processing
 # Random data
 n = 700
@@ -24,7 +23,7 @@ data_test = data.drop(data_train.index)
 train_label = data_train['y']
 test_label = data_test['y']
 plt.plot(data['x'], data['y'], '.')
-plt.close()
+plt.show()
 
 #* Build model
 def build_model():
