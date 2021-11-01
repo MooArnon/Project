@@ -9,7 +9,8 @@ import cv2.aruco as aruco
         Suppawich Pinyo  ==email== suppawich.pinyo@mail.kmutt.ac.th
          Nichapon Akkarachaidecho ==email== nichapon.a@mail.kmutt.ac.th
 
-    Concept:
+    Concept: Using cv2.composeRT to combine vector AC and BC. The differences between x-y-z canc be indicated.
+             So, the settlemet 
 
             vec(AB)
     [ A ]--------->[ B ]
@@ -54,8 +55,6 @@ camera_distotion = np.array([[ 1.38914028e-01, -3.23710598e+00, -1.31295901e-03,
 #* OpenCV section
 def working(camera_matrix, camera_distotion):
     # Parameter
-    MarkerTvecList = []
-    MarkerRvecList = []
     composedRvec, composedTvec = None, None
     firstMarkerID = 0
     secondMarkerID = 1
