@@ -5,12 +5,12 @@ import cv2.aruco as aruco
 """
     Objective: To find the relative distance between marker
     Conditions: Using 2 ArUco marker, first as a reference point and second is settlement measurement.
-    By: Arnon Phongsiang ==email== oomarnon.000@gmail.com
-        Suppawich Pinyo  ==email== suppawich.pinyo@mail.kmutt.ac.th
-         Nichapon Akkarachaidecho ==email== nichapon.a@mail.kmutt.ac.th
+    By: Arnon Phongsiang         ==email== oomarnon.000@gmail.com
+        Suppawich Pinyo          ==email== suppawich.pinyo@mail.kmutt.ac.th
+        Nichapon Akkarachaidecho ==email== nichapon.a@mail.kmutt.ac.th
 
     Concept: Using cv2.composeRT to combine vector AC and BC. The differences between x-y-z canc be indicated.
-             So, the settlemet 
+             So, the settlemet can be indicated.
 
             vec(AB)
     [ A ]--------->[ B ]
@@ -32,25 +32,25 @@ def InverseVector(rvec, tvec): # inputted rvec is now rotation vector.
     R = np.matrix(R).T         # .T for transpose.
     invTvec = np.dot(-R, np.matrix(tvec)) # Dot product of invese R and tvec
     invRvec, _ = cv2.Rodrigues(R) # convert R back to vector
-    return invRvec, invTvec
+    return invRvec, invTvec # return inversed vector
 
 #* Relative position
-def RelativePosition(rvec1, tvec1,rvec2, tvec2):
-    rvec1, tvec1 = rvec1.reshape((3,1)), tvec1.reshape((3,1))
-    rvec2, tvec2 =  rvec2.reshape((3,1)), tvec2.reshape((3,1)),
-    invrvec, invtvec = InverseVector(rvec2, tvec2)
-    info = cv2.composeRT(rvec1, tvec1, invrvec, invtvec)
-    composedRvec, composedTvec = info[0], info[1]
-    composedRvec = composedRvec.reshape((3,1))
-    composedTvec = composedTvec.reshape((3,1))
-    return composedRvec, composedTvec
+def RelativePosition(rvec1, tvec1,rvec2, tvec2):    # input tvec and tvec from each markers
+    rvec1, tvec1 = rvec1.reshape((3,1)), tvec1.reshape((3,1))   # reshape
+    rvec2, tvec2 =  rvec2.reshape((3,1)), tvec2.reshape((3,1)), # reshape
+    invrvec, invtvec = InverseVector(rvec2, tvec2)  # inverse second vector
+    info = cv2.composeRT(rvec1, tvec1, invrvec, invtvec) # conpose vec(AC) and vec(-BC)    
+    composedRvec, composedTvec = info[0], info[1]   # get th e result
+    composedRvec = composedRvec.reshape((3,1))  # reshape
+    composedTvec = composedTvec.reshape((3,1))  # reshape
+    return composedRvec, composedTvec   # return resulted vector
 
 #* Camera caribrated parameters
-#! Not true value, need to calibrate again.
-camera_matrix = np.array([[1.07729557e+03, 0.00000000e+00, 7.40231371e+02,], 
-                       [0.00000000e+00, 1.07316875e+03, 5.51345664e+02,],
+# From calibration code
+camera_matrix = np.array([[9.3038761666e+02, 0.00000000e+00, 5.4552965892e+02,], 
+                       [0.00000000e+00, 9.3609270917e+02, 3.8784425324e+02,],
                        [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-camera_distotion = np.array([[ 1.38914028e-01, -3.23710598e+00, -1.31295901e-03,  1.77727072e-03, 3.90343997e+01]])
+camera_distotion = np.array([[ 4.375128e-02, -2.7488186e-01, 5.61569e-03,  8.93889e-03, 4.8752157e-1]])
 
 #* OpenCV section
 def working(camera_matrix, camera_distotion):
@@ -58,7 +58,7 @@ def working(camera_matrix, camera_distotion):
     composedRvec, composedTvec = None, None
     firstMarkerID = 0
     secondMarkerID = 1
-    marker_size = 0.05
+    marker_size = 50 # [mm]
 
     # Open program
     while cap.isOpened():
@@ -72,10 +72,10 @@ def working(camera_matrix, camera_distotion):
                                                                 distCoeff=camera_distotion)
         # Detect all marker
         if np.all(ids is not None):
-            axis = np.float32([[-0.01, -0.01, 0], [-0.01, 0.01, 0], [0.01, -0.01, 0], [0.01, 0.01, 0]]).reshape(-1, 3)
-            for i in range(0, len(ids)):
+            for i in range(0, len(ids)): # detect marker
                 rvec, tvec, markerPoint = aruco.estimatePoseSingleMarkers(corners[i], marker_size, 
                                                                         camera_matrix, camera_distotion)
+                # give parameter
                 if ids[i] == firstMarkerID:
                     firstRvec = rvec
                     firstTvec = tvec
@@ -87,9 +87,14 @@ def working(camera_matrix, camera_distotion):
             if len(ids) > 1 and composedTvec is not None and composedRvec is not None:
                 info = cv2.composeRT(composedRvec, composedTvec, secondRvec.T, secondTvec.T)
                 TcomposedRvec, TcomposedTvec = info[0], info[1]
+                
+                # position of composed tvec
+                cv2.putText(frame, 'Relative position  '+str(TcomposedTvec), (50,400), 
+                            cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
 
-                # frame = draw(frame, corners[0], imgpts)
-                aruco.drawAxis(frame, camera_matrix, camera_distotion, TcomposedRvec, TcomposedTvec, 0.03)  # Draw Axis
+                aruco.drawAxis(frame, camera_matrix, camera_distotion, TcomposedRvec, TcomposedTvec, 10)  # Draw Axis
+        
+
 
         #display
         cv2.imshow('Processing', frame)
@@ -101,8 +106,8 @@ def working(camera_matrix, camera_distotion):
                 firstRvec, firstTvec = firstRvec.reshape((3, 1)), firstTvec.reshape((3, 1))
                 secondRvec, secondTvec = secondRvec.reshape((3, 1)), secondTvec.reshape((3, 1))
                 composedRvec, composedTvec = RelativePosition(firstRvec, firstTvec, secondRvec, secondTvec)
-
-        # When everything done, release the capture
+        
+        
     cap.release()
     cv2.destroyAllWindows()
 

@@ -3,16 +3,14 @@ import pandas as pd
 import cv2
 import cv2.aruco as aruco
 
-id_to_find = 0
-marker_size = 5 # [cm]
+marker_size = 100 # [mm]
 
 #* Calibration coefficient
 CalibrationPath =""
-camera_matrix = np.array([[1.019099074177694320e+03, 0.00000000e+00, 6.557727729771451095e+02,], 
-                       [0.00000000e+00, 1.011927236550148677e+03, 3.816077913964442700e+02,],
+camera_matrix = np.array([[9.3038761666e+02, 0.00000000e+00, 5.4552965892e+02,], 
+                       [0.00000000e+00, 9.3609270917e+02, 3.8784425324e+02,],
                        [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-camera_distotion = np.array([[2.576784605153304430e-01,-1.300640184051879311e+00,-4.285777480424158084e-03,-2.507657388926626523e-03,2.307018624520866812e+00]])
-
+camera_distotion = np.array([[ 4.375128e-02, -2.7488186e-01, 5.61569e-03,  8.93889e-03, 4.8752157e-1]])
 cap = cv2.VideoCapture(0)
 
 #* Run program
@@ -41,7 +39,7 @@ while cap.isOpened():
             rvec, tvec = ret[0][0,0,:], ret[1][0,0,:]
             # Draw detected marker, put axis
             aruco.drawDetectedMarkers(frame, corners)
-            aruco.drawAxis(frame, camera_matrix, camera_distotion, rvec, tvec, 10) 
+            aruco.drawAxis(frame, camera_matrix, camera_distotion, rvec, tvec, 100) 
             
     # Show interface
     cv2.imshow("Processing", frame)
