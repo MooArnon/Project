@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.core.defchararray import array
 import pandas as pd
 import cv2
 import cv2.aruco as aruco
@@ -23,6 +24,14 @@ import cv2.aruco as aruco
              VV  
              [c]
 """
+############* Procress of Work *################
+#*      Basic code, camera.                                     [Done]
+#*      Relative position.                                      [Done]
+#TODO   Detect 4 marker.                                         [In progress]
+#TODO   Reset tvec to be 0 in stratting of vector composed.     [In progress]
+#TODO   Set origin axis of references marker to be 0.            [In progress]
+#?      How long of distance that marker can detected?          [Todo experiment]
+
 # Read video from build in camera.
 cap = cv2.VideoCapture(0)
 
@@ -63,6 +72,7 @@ def working(camera_matrix, camera_distotion):
     # Open program
     while cap.isOpened():
         ret, frame = cap.read()
+        frame = cv2.resize(frame, (1080,720))
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         arucodict = aruco.Dictionary_get(aruco.DICT_5X5_250)
         parameter = aruco.DetectorParameters_create()
@@ -88,30 +98,29 @@ def working(camera_matrix, camera_distotion):
                 info = cv2.composeRT(composedRvec, composedTvec, secondRvec.T, secondTvec.T)
                 TcomposedRvec, TcomposedTvec = info[0], info[1]
                 
+                aruco.drawAxis(frame, camera_matrix, camera_distotion, TcomposedRvec, TcomposedTvec, 50)  # Draw Axis
+                dataComposedTvec = TcomposedTvec
                 # position of composed tvec
-                cv2.putText(frame, 'Relative position  '+str(TcomposedTvec), (50,400), 
+                cv2.putText(frame, 'Relative position  '+str(dataComposedTvec), (50,400), 
                             cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
-
-                aruco.drawAxis(frame, camera_matrix, camera_distotion, TcomposedRvec, TcomposedTvec, 10)  # Draw Axis
-        
-
-
         #display
         cv2.imshow('Processing', frame)
         key = cv2.waitKey(3) & 0xFF
         if key == ord('q'):  # Exit
                 break
         elif key == ord('c'): 
+            print('Composed')
             if len(ids) > 1:  # if 2 marker detected reverse second vectors and find the differences, by using RelativePosition
                 firstRvec, firstTvec = firstRvec.reshape((3, 1)), firstTvec.reshape((3, 1))
                 secondRvec, secondTvec = secondRvec.reshape((3, 1)), secondTvec.reshape((3, 1))
                 composedRvec, composedTvec = RelativePosition(firstRvec, firstTvec, secondRvec, secondTvec)
-        
+
+        elif key == ord('f'):
+            print('FUCK YOU!!!!!!!!!!!!!!!!!!!!')    
+
         
     cap.release()
     cv2.destroyAllWindows()
-
-
 
 working(camera_matrix,camera_distotion)
 
