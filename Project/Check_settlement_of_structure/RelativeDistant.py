@@ -9,10 +9,8 @@ import cv2.aruco as aruco
     By: Arnon Phongsiang         ==email== oomarnon.000@gmail.com
         Suppawich Pinyo          ==email== suppawich.pinyo@mail.kmutt.ac.th
         Nichapon Akkarachaidecho ==email== nichapon.a@mail.kmutt.ac.th
-
     Concept: Using cv2.composeRT to combine vector AC and BC. The differences between x-y-z canc be indicated.
              So, the settlemet can be indicated.
-
             vec(AB)
     [ A ]--------->[ B ]
        \            /
@@ -101,7 +99,7 @@ def working(camera_matrix, camera_distotion):
                 aruco.drawAxis(frame, camera_matrix, camera_distotion, TcomposedRvec, TcomposedTvec, 50)  # Draw Axis
                 dataComposedTvec = TcomposedTvec
                 # position of composed tvec
-                cv2.putText(frame, 'Relative position  '+str(dataComposedTvec), (50,400), 
+                cv2.putText(frame, 'Relative position  '+str(dataComposedTvec[1]), (50,400), 
                             cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
         #display
         cv2.imshow('Processing', frame)
@@ -123,4 +121,3 @@ def working(camera_matrix, camera_distotion):
     cv2.destroyAllWindows()
 
 working(camera_matrix,camera_distotion)
-

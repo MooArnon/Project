@@ -29,12 +29,15 @@ plt.show()
 def build_model():
     model = keras.Sequential([
         layers.Dense(128, activation=tf.nn.relu, input_dim=1),
+        layers.Dense(128, activation=tf.nn.relu),
         layers.Dense(64, activation=tf.nn.relu),
+        layers.Dense(64, activation=tf.nn.relu),
+        layers.Dense(32, activation=tf.nn.relu),
         layers.Dense(32, activation=tf.nn.relu),
         layers.Dense(1)
         ])
-    optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.001)
-    model.compile(loss='mse',
+    optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.0001)
+    model.compile(loss='mae',
                    optimizer=optimizer,
                    metrics=['mse', 'mae'])
 
