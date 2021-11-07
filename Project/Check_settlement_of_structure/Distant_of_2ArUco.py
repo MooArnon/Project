@@ -54,19 +54,19 @@ def process(CameraMatrix, CameraDistotion, cal):
                     y1 = round(tvec[0][0][1], 3)    # [[[x, y, z]]]
                     z1 = round(tvec[0][0][2], 3)
                     # Print position 1st each marker
-                    cv2.putText(frame, 'x1  '+str(x1), (400,400), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
-                    cv2.putText(frame, 'y1  '+str(y1), (200,400), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
-                    cv2.putText(frame, 'z1  '+str(z1), (50,400), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
+                    cv2.putText(frame, 'x1  '+str(x1), (50,50), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 255), 2)
+                    cv2.putText(frame, 'y1  '+str(y1), (200,50), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 255), 2)
+                    cv2.putText(frame, 'z1  '+str(z1), (350,50), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 255), 2)
 
                 elif ids[i] == secondMarkerID:  # Detect 2nd marker
                     x2 = round(tvec[0][0][0], 3)    # [[[x, y, z]]]
                     y2 = round(tvec[0][0][1], 3)    # [[[x, y, z]]]
                     z2 = round(tvec[0][0][2] ,3)
                     # Print position of 2nd marker
-                    cv2.putText(frame, 'x2  '+str(x2), (400,200), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)                        
-                    cv2.putText(frame, 'y2  '+str(y2), (200,200), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
-                    cv2.putText(frame, 'z2  '+str(z2), (50,200), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
-
+                    cv2.putText(frame, 'x2  '+str(x2), (50,100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 255), 2)                        
+                    cv2.putText(frame, 'y2  '+str(y2), (200,100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 255), 2)
+                    cv2.putText(frame, 'z2  '+str(z2), (350,100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 255), 2)
+                
             #######* Distance calculation process *########
             if len(ids) > 1 and x1 is not None and x2 is not None:
                 if cal == 'xy':
@@ -77,6 +77,14 @@ def process(CameraMatrix, CameraDistotion, cal):
                     dist = round(calculatedistance_xyz(x1, y1, z1, x2, y2, z2), 2) # , [millimetres]
                     cv2.putText(frame, 'Distant, 3D:  '+str(dist), (800,200), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 255, 0), 2)
                     aruco.drawDetectedMarkers(frame, corners)
+                #* Coordinate diff
+                xDiff = round(x1-x2, 2) # x diff coordinate
+                yDiff = round(y1-y2, 2) # y diff coordinate
+                zDiff = round(z1-z2, 2) # z diff coordinate
+                cv2.putText(frame, 'Coordinate Displacement', (50,550), cv2.FONT_HERSHEY_SIMPLEX,0.5,  (0, 150, 0), 2) # z diff coordinate
+                cv2.putText(frame, 'x different  '+str(xDiff), (50,600), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 150, 0), 2) # x diff coordinate
+                cv2.putText(frame, 'y different  '+str(yDiff), (50,650), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 150, 0), 2) # y diff coordinate
+                cv2.putText(frame, 'z different  '+str(zDiff), (50,700), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 150, 0), 2) # z diff coordinate
 
                 
         cv2.imshow('Processing', frame)
