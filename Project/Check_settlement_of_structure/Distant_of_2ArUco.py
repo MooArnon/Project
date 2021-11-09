@@ -18,10 +18,7 @@ tvecsData = []
 distance = []
 FrameSize = (1080, 720)
 cap = cv2.VideoCapture(0)
-x1 = 0
-x2 = 0
-y1 = 0
-y2 = 0  
+
 
 #* Distant in plane x-y
 def calculateDistance_xy(x1,y1,x2,y2):  # Calculate distant between 2 ArUco
