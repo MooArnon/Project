@@ -4,8 +4,8 @@ import glob
 
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 
-chessboardSize = (7,10)
-frameSize = (1080,720)
+chessboardSize = (10,7)  #! Not sure
+frameSize = (1080,720)  #* use in main code
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -15,13 +15,14 @@ objp = np.zeros((chessboardSize[0] * chessboardSize[1], 3), np.float32)
 objp[:,:2] = np.mgrid[0:chessboardSize[0],0:chessboardSize[1]].T.reshape(-1,2)
 
 size_of_chessboard_squares_mm = 40
+
 objp = objp * size_of_chessboard_squares_mm
 
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 
-images =  glob.glob('ImagePath/*.jpg')
+images =  glob.glob('/Users/moomacprom1/Data_science/Code/GitHub/Project/Check_settlement_of_structure/Camera _calibration/Data/*.jpg')
 
 for image in images:
 

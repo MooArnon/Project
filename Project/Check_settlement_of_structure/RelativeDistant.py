@@ -112,11 +112,8 @@ def working(camera_matrix, camera_distotion):
                 firstRvec, firstTvec = firstRvec.reshape((3, 1)), firstTvec.reshape((3, 1))
                 secondRvec, secondTvec = secondRvec.reshape((3, 1)), secondTvec.reshape((3, 1))
                 composedRvec, composedTvec = RelativePosition(firstRvec, firstTvec, secondRvec, secondTvec)
-
-        elif key == ord('f'):
-            print('FUCK YOU!!!!!!!!!!!!!!!!!!!!')    
-
-        
+   
+           
     cap.release()
     cv2.destroyAllWindows()
 
